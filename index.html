@@ -1,0 +1,432 @@
+<!doctype html>
+<html lang="en" class="h-full">
+ <head>
+    
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Galentine Card</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="/_sdk/element_sdk.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&amp;family=Quicksand:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+  <style>
+    .font-pacifico { font-family: 'Pacifico', cursive; }
+    .font-quicksand { font-family: 'Quicksand', sans-serif; }
+    
+    @keyframes float {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-20px) rotate(5deg); }
+    }
+    
+    @keyframes pulse-heart {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+    }
+    
+    @keyframes confetti-fall {
+      0% { transform: translateY(-100%) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(100%) rotate(720deg); opacity: 0; }
+    }
+    
+    @keyframes bounce-in {
+      0% { transform: scale(0); opacity: 0; }
+      50% { transform: scale(1.2); }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    
+    @keyframes shimmer {
+      0% { background-position: -200% center; }
+      100% { background-position: 200% center; }
+    }
+    
+    .animate-float { animation: float 3s ease-in-out infinite; }
+    .animate-pulse-heart { animation: pulse-heart 1.5s ease-in-out infinite; }
+    .animate-bounce-in { animation: bounce-in 0.6s ease-out forwards; }
+    
+    .confetti {
+      position: fixed;
+      width: 10px;
+      height: 10px;
+      animation: confetti-fall 3s linear forwards;
+    }
+    
+    .shimmer-text {
+      background: linear-gradient(90deg, #ec4899, #f472b6, #ffffff, #f472b6, #ec4899);
+      background-size: 200% auto;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: shimmer 3s linear infinite;
+    }
+    
+    .no-btn {
+      transition: all 0.1s ease;
+    }
+    
+    .gallery-item {
+      opacity: 0;
+      transform: scale(0.8);
+      transition: all 0.5s ease;
+    }
+    
+    .gallery-item.visible {
+      opacity: 1;
+      transform: scale(1);
+    }
+  </style>
+  <style>body { box-sizing: border-box; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+ </head>
+ <body class="h-full font-quicksand">
+    <!-- Background Music -->
+<audio id="bg-music" loop>
+  <source src="./songs/zzz01kha-yf2hk-bzgev-4wj7c-gsdfs1.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+  // Play music on first click anywhere
+  document.addEventListener("click", function() {
+    const music = document.getElementById("bg-music");
+    music.play();
+  }, { once: true });
+</script>
+
+    
+  <div id="app" class="h-full w-full overflow-auto"><!-- Page 1: Question -->
+   <div id="page1" class="min-h-full w-full flex flex-col items-center justify-center p-6" style="background: linear-gradient(135deg, #fdf2f8 0%, #fce7f3 50%, #fbcfe8 100%);"><!-- Floating Hearts Background -->
+    <div class="fixed inset-0 pointer-events-none overflow-hidden">
+     <div class="absolute top-10 left-10 text-4xl animate-float" style="animation-delay: 0s;">
+      💕
+     </div>
+     <div class="absolute top-20 right-20 text-3xl animate-float" style="animation-delay: 0.5s;">
+      💗
+     </div>
+     <div class="absolute bottom-32 left-20 text-5xl animate-float" style="animation-delay: 1s;">
+      💖
+     </div>
+     <div class="absolute bottom-20 right-10 text-4xl animate-float" style="animation-delay: 1.5s;">
+      💝
+     </div>
+     <div class="absolute top-1/3 left-5 text-2xl animate-float" style="animation-delay: 2s;">
+      ✨
+     </div>
+     <div class="absolute top-1/2 right-5 text-2xl animate-float" style="animation-delay: 2.5s;">
+      ✨
+     </div>
+    </div><!-- Main Content -->
+    <div class="relative z-10 text-center max-w-lg"><!-- Big Heart -->
+     <div class="text-8xl mb-6 animate-pulse-heart">
+      💖
+     </div><!-- Question -->
+     <h1 id="mainQuestion" class="font-pacifico text-4xl md:text-5xl text-pink-600 mb-12 leading-relaxed">Will you be my Galentine?My Girl MS.Aparna</h1><!-- Buttons -->
+     <div class="flex flex-col items-center gap-6">
+      <div class="flex gap-6 items-center justify-center relative" style="min-height: 80px; width: 100%;"><!-- Yes Button --> <button id="yesBtn" class="px-10 py-4 bg-pink-500 hover:bg-pink-600 text-white text-xl font-bold rounded-full shadow-lg transform hover:scale-110 transition-all duration-300"> Yes! 💕 </button> <!-- No Button Container -->
+       <div id="noBtnContainer" class="relative"><button id="noBtn" class="no-btn px-10 py-4 bg-gray-300 hover:bg-gray-400 text-gray-600 text-xl font-bold rounded-full shadow-lg"> No </button>
+       </div>
+      </div><!-- Hint Text -->
+      <p id="hintText" class="text-pink-400 text-sm mt-4 italic">✨ Don't waste your time to follow the No ✨</p>
+     </div>
+    </div>
+   </div><!-- Page 2: Celebration -->
+   <div id="page2" class="min-h-full w-full flex flex-col items-center justify-center p-6 hidden" style="background: linear-gradient(135deg, #fdf2f8 0%, #fce7f3 50%, #fbcfe8 100%);"><!-- Confetti Container -->
+    <div id="confettiContainer" class="fixed inset-0 pointer-events-none z-50"></div>
+    <div class="relative z-10 text-center max-w-lg"><!-- Galentine Image/Illustration -->
+     <div class="mb-8 animate-bounce-in">
+      <svg viewBox="0 0 200 200" class="w-48 h-48 mx-auto">
+  <!-- Circle background -->
+  <circle cx="100" cy="100" r="95" fill="#fce7f3" stroke="#ec4899" stroke-width="3" />
+
+  <!-- Centered circular image -->
+  <defs>
+    <!-- Define a circular clip path -->
+    <clipPath id="circleClip">
+      <circle cx="100" cy="100" r="80" />
+    </clipPath>
+  </defs>
+
+  <image 
+    href="./images/WhatsApp Image 2026-02-13 at 11.41.15 AM.jpeg" 
+    x="20" 
+    y="20" 
+    width="160" 
+    height="160" 
+    clip-path="url(#circleClip)" 
+    preserveAspectRatio="xMidYMid slice"
+  />
+
+</svg>
+
+        💕
+       </text>
+      </svg>
+     </div><!-- Celebration Text -->
+     <h1 id="celebrationText" class="font-pacifico text-4xl md:text-5xl shimmer-text mb-8">Yaaahhh! Be my forever Galentine!</h1><!-- Red Heart -->
+     <div class="text-6xl mb-6 animate-pulse-heart">
+      ❤️
+     </div><!-- Special Moments Text -->
+     <p id="momentsIntro" class="text-pink-600 text-xl mb-8 font-medium">I want to show you some special moments of us</p><!-- See Moments Button --> <button id="seeMomentsBtn" class="px-8 py-4 bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white text-xl font-bold rounded-full shadow-xl transform hover:scale-105 transition-all duration-300 flex items-center gap-3 mx-auto"> <span>See the Moments</span> <span class="text-2xl">📸</span> </button>
+    </div>
+   </div><!-- Page 3: Gallery -->
+   <div id="page3" class="min-h-full w-full flex flex-col items-center p-6 hidden" style="background: linear-gradient(135deg, #fdf2f8 0%, #fce7f3 50%, #fbcfe8 100%);">
+    <div class="relative z-10 text-center w-full max-w-4xl py-8"><!-- Header -->
+     <h2 class="font-pacifico text-3xl md:text-4xl text-pink-600 mb-4">Our Special Moments</h2>
+     <div class="text-4xl mb-8">
+      💕✨💕
+     </div><!-- Photo Gallery -->
+     <div id="gallery" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8"><!-- Moment 1 -->
+      <div class="gallery-item bg-white rounded-2xl shadow-xl overflow-hidden transform hover:scale-105 transition-all duration-300">
+       <div class="aspect-square bg-gradient-to-br from-pink-200 to-purple-200 flex items-center justify-center">
+        <svg viewbox="0 0 150 150" class="w-full h-full p-6"><rect x="10" y="10" width="130" height="130" rx="10" fill="#fce7f3" stroke="#ec4899" stroke-width="2" /> <text x="75" y="60" text-anchor="middle" font-size="40">
+          👯‍♀️
+         </text> <text x="75" y="100" text-anchor="middle" font-size="12" fill="#db2777" font-weight="bold">
+          Best Friends
+         </text> <text x="75" y="120" text-anchor="middle" font-size="10" fill="#9ca3af">
+          <img src="./images/img 10.jpeg" alt="Description of image">        </text>
+        </svg>
+       </div>
+       <div class="p-4 bg-white">
+        <p class="text-pink-600 font-semibold">Our First Adventure 🌟</p>
+       </div>
+      </div><!-- Moment 2 -->
+      <div class="gallery-item bg-white rounded-2xl shadow-xl overflow-hidden transform hover:scale-105 transition-all duration-300">
+       <div class="aspect-square bg-gradient-to-br from-rose-200 to-pink-200 flex items-center justify-center">
+        <svg viewbox="0 0 150 150" class="w-full h-full p-6"><rect x="10" y="10" width="130" height="130" rx="10" fill="#ffe4e6" stroke="#f43f5e" stroke-width="2" /> <text x="75" y="60" text-anchor="middle" font-size="40">
+          🎉
+         </text> <text x="75" y="100" text-anchor="middle" font-size="12" fill="#e11d48" font-weight="bold">
+          Celebrations
+         </text> <text x="75" y="120" text-anchor="middle" font-size="10" fill="#9ca3af">
+          <img src="./images/img 5.jpeg" alt="Description of image">  
+         </text>
+        </svg>
+       </div>
+       <div class="p-4 bg-white">
+        <p class="text-pink-600 font-semibold">Celebrating Together 🎂</p>
+       </div>
+      </div><!-- Moment 3 -->
+      <div class="gallery-item bg-white rounded-2xl shadow-xl overflow-hidden transform hover:scale-105 transition-all duration-300">
+       <div class="aspect-square bg-gradient-to-br from-fuchsia-200 to-pink-200 flex items-center justify-center">
+        <svg viewbox="0 0 150 150" class="w-full h-full p-6"><rect x="10" y="10" width="130" height="130" rx="10" fill="#fae8ff" stroke="#d946ef" stroke-width="2" /> <text x="75" y="60" text-anchor="middle" font-size="40">
+          ☕
+         </text> <text x="75" y="100" text-anchor="middle" font-size="12" fill="#c026d3" font-weight="bold">
+          Coffee Dates
+         </text> <text x="75" y="120" text-anchor="middle" font-size="10" fill="#9ca3af">
+          <img src="./images/img 3.jpeg" alt="Description of image"> 
+         </text>
+        </svg>
+       </div>
+       <div class="p-4 bg-white">
+        <p class="text-pink-600 font-semibold">Coffee &amp; Gossip ☕</p>
+       </div>
+      </div><!-- Moment 4 -->
+      <div class="gallery-item bg-white rounded-2xl shadow-xl overflow-hidden transform hover:scale-105 transition-all duration-300">
+       <div class="aspect-square bg-gradient-to-br from-violet-200 to-pink-200 flex items-center justify-center">
+        <svg viewbox="0 0 150 150" class="w-full h-full p-6"><rect x="10" y="10" width="130" height="130" rx="10" fill="#ede9fe" stroke="#8b5cf6" stroke-width="2" /> <text x="75" y="60" text-anchor="middle" font-size="40">
+          🎬
+         </text> <text x="75" y="100" text-anchor="middle" font-size="12" fill="#7c3aed" font-weight="bold">
+          Movie Nights
+         </text> <text x="75" y="120" text-anchor="middle" font-size="10" fill="#9ca3af">
+        <img src="./images/img 4.jpeg" alt="Description of image">
+         </text>
+        </svg>
+       </div>
+       <div class="p-4 bg-white">
+        <p class="text-pink-600 font-semibold">Movie Marathon 🍿</p>
+       </div>
+      </div><!-- Moment 5 -->
+      <div class="gallery-item bg-white rounded-2xl shadow-xl overflow-hidden transform hover:scale-105 transition-all duration-300">
+       <div class="aspect-square bg-gradient-to-br from-amber-200 to-pink-200 flex items-center justify-center">
+        <svg viewbox="0 0 150 150" class="w-full h-full p-6"><rect x="10" y="10" width="130" height="130" rx="10" fill="#fef3c7" stroke="#f59e0b" stroke-width="2" /> <text x="75" y="60" text-anchor="middle" font-size="40">
+          🌅
+         </text> <text x="75" y="100" text-anchor="middle" font-size="12" fill="#d97706" font-weight="bold">
+          Adventures
+         </text> <text x="75" y="120" text-anchor="middle" font-size="10" fill="#9ca3af">
+          <img src="./images/WhatsApp Image 2026-02-13 at 1.32.37 PM.jpeg" alt="Description of image">
+         </text>
+        </svg>
+       </div>
+       <div class="p-4 bg-white">
+        <p class="text-pink-600 font-semibold">Sunset Vibes 🌅</p>
+       </div>
+      </div><!-- Moment 6 -->
+      <div class="gallery-item bg-white rounded-2xl shadow-xl overflow-hidden transform hover:scale-105 transition-all duration-300">
+       <div class="aspect-square bg-gradient-to-br from-teal-200 to-pink-200 flex items-center justify-center">
+        <svg viewbox="0 0 150 150" class="w-full h-full p-6"><rect x="10" y="10" width="130" height="130" rx="10" fill="#ccfbf1" stroke="#14b8a6" stroke-width="2" /> <text x="75" y="60" text-anchor="middle" font-size="40">
+          💕
+         </text> <text x="75" y="100" text-anchor="middle" font-size="12" fill="#0d9488" font-weight="bold">
+          Forever Friends
+         </text> <text x="75" y="120" text-anchor="middle" font-size="10" fill="#9ca3af">
+          <img src="./images/img 9.jpeg" alt="Description of image">
+         </text>
+        </svg>
+       </div>
+       <div class="p-4 bg-white">
+        <p class="text-pink-600 font-semibold">Forever &amp; Always 💖</p>
+       </div>
+      </div>
+     </div><!-- Footer Message -->
+     <div class="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-xl">
+      <p class="font-pacifico text-2xl text-pink-600 mb-2">Thank you for being my Galentine!</p>
+      <p class="text-pink-500">Here's to more memories together! 💕</p>
+      <div class="text-4xl mt-4">
+       👯‍♀️💖✨
+      </div>
+     </div>
+    </div>
+   </div>
+  </div>
+  <script>
+    const defaultConfig = {
+      main_question: "Will you be my Galentine?",
+      hint_text: "✨ Don't waste your time to follow the No ✨",
+      celebration_text: "Yaaahhh! Be my forever Galentine!",
+      moments_intro: "I want to show you some special moments of us",
+      background_color: "#fdf2f8",
+      text_color: "#db2777",
+      button_color: "#ec4899",
+      accent_color: "#f472b6",
+      card_color: "#ffffff"
+    };
+
+    let config = { ...defaultConfig };
+
+    // No button escape logic
+    const noBtn = document.getElementById('noBtn');
+    const noBtnContainer = document.getElementById('noBtnContainer');
+    
+    function moveNoButton() {
+      const container = document.getElementById('page1');
+      const containerRect = container.getBoundingClientRect();
+      const btnRect = noBtn.getBoundingClientRect();
+      
+      const maxX = containerRect.width - btnRect.width - 40;
+      const maxY = containerRect.height - btnRect.height - 40;
+      
+      const randomX = Math.random() * maxX;
+      const randomY = Math.random() * maxY;
+      
+      noBtn.style.position = 'fixed';
+      noBtn.style.left = `${Math.max(20, randomX)}px`;
+      noBtn.style.top = `${Math.max(20, randomY)}px`;
+      noBtn.style.zIndex = '100';
+    }
+    
+    noBtn.addEventListener('mouseenter', moveNoButton);
+    noBtn.addEventListener('touchstart', (e) => {
+      e.preventDefault();
+      moveNoButton();
+    });
+    noBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      moveNoButton();
+    });
+
+    // Yes button click
+    document.getElementById('yesBtn').addEventListener('click', () => {
+      document.getElementById('page1').classList.add('hidden');
+      document.getElementById('page2').classList.remove('hidden');
+      createConfetti();
+    });
+
+    // See moments button
+    document.getElementById('seeMomentsBtn').addEventListener('click', () => {
+      document.getElementById('page2').classList.add('hidden');
+      document.getElementById('page3').classList.remove('hidden');
+      animateGallery();
+    });
+
+    // Confetti effect
+    function createConfetti() {
+      const container = document.getElementById('confettiContainer');
+      const colors = ['#ec4899', '#f472b6', '#fbbf24', '#a78bfa', '#34d399', '#f87171', '#60a5fa'];
+      const shapes = ['●', '■', '▲', '★', '♥'];
+      
+      for (let i = 0; i < 100; i++) {
+        setTimeout(() => {
+          const confetti = document.createElement('div');
+          confetti.className = 'confetti';
+          confetti.style.left = `${Math.random() * 100}%`;
+          confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+          confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
+          confetti.style.animationDuration = `${2 + Math.random() * 2}s`;
+          confetti.style.animationDelay = `${Math.random() * 0.5}s`;
+          confetti.textContent = shapes[Math.floor(Math.random() * shapes.length)];
+          confetti.style.fontSize = `${10 + Math.random() * 15}px`;
+          confetti.style.color = colors[Math.floor(Math.random() * colors.length)];
+          container.appendChild(confetti);
+          
+          setTimeout(() => confetti.remove(), 4000);
+        }, i * 30);
+      }
+    }
+
+    // Gallery animation
+    function animateGallery() {
+      const items = document.querySelectorAll('.gallery-item');
+      items.forEach((item, index) => {
+        setTimeout(() => {
+          item.classList.add('visible');
+        }, index * 200);
+      });
+    }
+
+    // Config change handler
+    async function onConfigChange(newConfig) {
+      config = { ...defaultConfig, ...newConfig };
+      
+      document.getElementById('mainQuestion').textContent = config.main_question || defaultConfig.main_question;
+      document.getElementById('hintText').textContent = config.hint_text || defaultConfig.hint_text;
+      document.getElementById('celebrationText').textContent = config.celebration_text || defaultConfig.celebration_text;
+      document.getElementById('momentsIntro').textContent = config.moments_intro || defaultConfig.moments_intro;
+      
+      // Apply colors
+      const pages = [document.getElementById('page1'), document.getElementById('page2'), document.getElementById('page3')];
+      pages.forEach(page => {
+        page.style.background = `linear-gradient(135deg, ${config.background_color} 0%, ${config.accent_color}33 50%, ${config.button_color}33 100%)`;
+      });
+      
+      document.getElementById('mainQuestion').style.color = config.text_color;
+      document.getElementById('yesBtn').style.backgroundColor = config.button_color;
+    }
+
+    // Element SDK initialization
+    if (window.elementSdk) {
+      window.elementSdk.init({
+        defaultConfig,
+        onConfigChange,
+        mapToCapabilities: (cfg) => ({
+          recolorables: [
+            {
+              get: () => cfg.background_color || defaultConfig.background_color,
+              set: (v) => { cfg.background_color = v; window.elementSdk.setConfig({ background_color: v }); }
+            },
+            {
+              get: () => cfg.card_color || defaultConfig.card_color,
+              set: (v) => { cfg.card_color = v; window.elementSdk.setConfig({ card_color: v }); }
+            },
+            {
+              get: () => cfg.text_color || defaultConfig.text_color,
+              set: (v) => { cfg.text_color = v; window.elementSdk.setConfig({ text_color: v }); }
+            },
+            {
+              get: () => cfg.button_color || defaultConfig.button_color,
+              set: (v) => { cfg.button_color = v; window.elementSdk.setConfig({ button_color: v }); }
+            },
+            {
+              get: () => cfg.accent_color || defaultConfig.accent_color,
+              set: (v) => { cfg.accent_color = v; window.elementSdk.setConfig({ accent_color: v }); }
+            }
+          ],
+          borderables: [],
+          fontEditable: undefined,
+          fontSizeable: undefined
+        }),
+        mapToEditPanelValues: (cfg) => new Map([
+          ["main_question", cfg.main_question || defaultConfig.main_question],
+          ["hint_text", cfg.hint_text || defaultConfig.hint_text],
+          ["celebration_text", cfg.celebration_text || defaultConfig.celebration_text],
+          ["moments_intro", cfg.moments_intro || defaultConfig.moments_intro]
+        ])
+      });
+    }
+  </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9cd19dc333c37edf',t:'MTc3MDk1NzI5Ny4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
